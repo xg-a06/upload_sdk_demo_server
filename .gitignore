@@ -1,0 +1,15 @@
+node_modules
+.DS_Store
+node_modules
+dist
+upload
+
+.dist
+.cache
+.idea
+.vscode
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.idea

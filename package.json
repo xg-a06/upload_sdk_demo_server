@@ -1,0 +1,14 @@
+{
+  "name": "upload_demo_server",
+  "version": "1.0.0",
+  "description": "upload sdk server demo",
+  "main": "bin/www.js",
+  "scripts": {
+    "start": "nodemon bin/www"
+  },
+  "author": "xg_jser@163.com",
+  "license": "MIT",
+  "devDependencies": {
+    "nodemon": "^1.19.0"
+  }
+}
