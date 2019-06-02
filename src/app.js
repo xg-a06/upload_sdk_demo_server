@@ -1,12 +1,25 @@
+/*
+ * @Description:
+ * @Author: xg-a06
+ * @Date: 2019-05-23 16:28:58
+ * @LastEditTime: 2019-06-02 23:35:28
+ * @LastEditors: xg-a06
+ */
 const crypto = require('crypto')
 const fs = require('fs')
 const path = require('path')
+const url = require('url')
 
 const serverHandler = (req, res) => {
   res.writeHead(200, {
-    'Access-Control-Allow-Origin': 'http://localhost:2333'
+    'Content-Type': 'application/json;charset=utf-8',
+    'Access-Control-Allow-Origin': '*',
+    'Access-Control-Allow-Methods': 'POST, PUT, DELETE'
   })
-
+  if (req.method === 'OPTIONS') {
+    res.end()
+    return
+  }
   let buf = []
   let string
   req.on('data', data => {
@@ -21,7 +34,7 @@ const serverHandler = (req, res) => {
     }
   })
 
-  res.end(JSON.stringify({ data: [{ a: 1, b: 2 }] }))
+  res.end(JSON.stringify({ a: 1 }))
 }
 
 function splitBuffer(buffer, sep) {
@@ -52,23 +65,26 @@ function copeData(buffer, boundary) {
     let headLen = head.length
     head = head.toString()
     let name = head.match(/name="(\w*)"/)[1]
-    if (head.includes('filename')) {
-      obj['file'] = line.slice(headLen + 4)
+    let value = null
+    if (name === 'file') {
+      value = line.slice(headLen + 4)
     } else {
-      let value = tail.toString()
-      obj[name] = value
+      value = tail.toString()
     }
+    obj[name] = value
   })
-  // let fileOriName = crypto
-  //   .createHash('md5')
-  //   .update(obj.fileOriName)
-  //   .digest('hex')
-  // console.log(obj.fileOriName)
 
-  // let fileSuffix = obj.fileOriName.substring(
-  //   obj.fileOriName.lastIndexOf('.') + 1
-  // )
-  fs.writeFileSync(path.resolve(__dirname, `../upload/xxx.png`), obj.file)
+  if (parseInt(obj.start) === 0) {
+    fs.writeFileSync(
+      path.join(__dirname, `../uploads/${obj.filename}`),
+      obj.file
+    )
+  } else {
+    fs.appendFileSync(
+      path.join(__dirname, `../uploads/${obj.filename}`),
+      obj.file
+    )
+  }
 }
 
 module.exports = serverHandler
