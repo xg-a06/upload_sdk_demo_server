@@ -1,40 +1,35 @@
-function noop() {}
+/*
+ * @Description:
+ * @Author: xg-a06
+ * @Date: 2019-05-24 12:37:47
+ * @LastEditTime: 2019-06-03 14:28:14
+ * @LastEditors: xg-a06
+ */
+const KoaRouter = require('koa-router')
+const koaCompose = require('koa-compose')
+const upload = require('./controller')
 
-class Router {
-  constructor() {
-    this.routes = {}
-  }
-  add(type, path, fn) {
-    if (this.routes[type] === undefined) {
-      this.routes[type] = {}
-    }
-    if (this.routes[type][path] === undefined) {
-      this.routes[type][path] = []
-    }
-    this.routes[type][path] = fn
-  }
-  get(path, fn) {
-    this.add('get', path, fn)
-  }
-  post(path, fn) {
-    this.add('post', path, fn)
-  }
-  match(method, url) {
-    if (url === '/favicon.ico') {
-      return noop
-    }
-    return this.routes[method][url] || noop
-  }
-  handler(req, res) {
-  
-    res.json = data => {
-      res.setHeader('Content-type', 'application/json')
-      res.end(JSON.stringify(data))
-    }
-    const url = req.url
-    const method = req.method.toLowerCase()
+const router = new KoaRouter()
 
-    const fn = this.match(method, url)
-    fn(req, res)
-  }
+router.get('/', async (ctx, next) => {
+  ctx.body = 'upload demo server'
+})
+
+router.get('/upload/:hash', async (ctx, next) => {
+  let hash = ctx.params.hash
+  let ret = await upload.getIndexByHash(hash)
+  ctx.body = ret
+})
+router.post('/upload', async (ctx, next) => {
+  let ret = upload.upload(ctx.req.body)
+  ctx.body = ret
+})
+
+router.post('/complete', async (ctx, next) => {
+  let ret = await upload.complete(ctx.req.body)
+  ctx.body = ret
+})
+
+module.exports = () => {
+  return koaCompose([router.routes(), router.allowedMethods()])
 }

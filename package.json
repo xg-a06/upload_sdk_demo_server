@@ -4,11 +4,17 @@
   "description": "upload sdk server demo",
   "main": "bin/www.js",
   "scripts": {
-    "start": "nodemon bin/www"
+    "start": "nodemon src/index.js"
   },
   "author": "xg_jser@163.com",
   "license": "MIT",
   "devDependencies": {
     "nodemon": "^1.19.0"
+  },
+  "dependencies": {
+    "koa": "^2.7.0",
+    "koa-router": "^7.4.0",
+    "koa2-cors": "^2.0.6",
+    "qs": "^6.7.0"
   }
 }

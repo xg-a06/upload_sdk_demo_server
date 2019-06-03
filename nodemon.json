@@ -1,5 +1,6 @@
 {
   "restartable": "rs",
   "verbose": false,
+  "ignore": ["src/db.json"],
   "watch": ["src"]
 }
